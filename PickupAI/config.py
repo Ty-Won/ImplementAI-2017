@@ -1,0 +1,1 @@
+SUBSCRIPTION_TOKEN = 'dc1c63aec7fa4446961f56fba8e1aefa'
