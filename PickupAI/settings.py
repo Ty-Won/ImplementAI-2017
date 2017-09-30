@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'PickupAI.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'pickupai',
+        'USER': 'pickupai@pickupai',
+        'PASSWORD': 'pickServer.123',
+        'HOST': 'pickupai.database.windows.net',
+        'PORT': '1433',
     }
 }
 
