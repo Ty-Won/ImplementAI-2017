@@ -1,20 +1,22 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
+
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<title>Web dictaphone</title>
 	
 	<!--[if le IE 9]>
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-      <script src="js/respond.js"></script>
+      <script src="{% static "js/respond.js" %}"></script>
     <![endif]-->
-    
+
     
     <link href='http://fonts.googleapis.com/css?family=Dancing+Script:700' rel='stylesheet' type='text/css'>
-	<link href="css/normalize.css" rel="stylesheet" type="text/css">
+	<link href="{% static "css/normalize.css" %}" rel="stylesheet" type="text/css">
 	
-	<link href="css/app.css" rel="stylesheet" type="text/css">
+	<link href="{% static "css/app.css" %}" rel="stylesheet" type="text/css">
 	
 </head>
 <body>
@@ -58,11 +60,12 @@
 
   <!-- The following element pulls in the script for the default template functionality -->
       
-    <script src="js/install.js"></script>
+    <script src="{% static "js/install.js" %}"></script>
 
     <!-- Below is your custom application script -->
 
-    <script src="js/app.js"></script>
+    <script src="{% static "js/app.js" %}"></script>
+
 	
 </body>
 </html>
