@@ -342,6 +342,11 @@ svg{
   animation:appear 0.3s ease-in 8.7s forwards;
 }
 
+.text_message{
+  opacity: 0;
+  animation:appear 0.3s ease-in 8.7s forwards;
+}
+
 .check_mark{
   opacity: 0;
   visibility: hidden;
@@ -455,6 +460,15 @@ svg{
    100%{
     opacity:0;
   }
+}
+
+
+.microphone.record > .circle-tick{
+  fill: #fff;
+}
+
+.microphone.stop > .circle-tick{
+  fill: #f00;
 }
 
 
