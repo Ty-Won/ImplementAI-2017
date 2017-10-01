@@ -254,42 +254,6 @@ animation: sack 6s ease-in forwards;
 }
 
 
-.Phone {
-  /*position: aboslute;*/
-  /*display: block;*/
-  /*margin: 0;*/
-  /*width: 1em;*/
-  /*height: 1em;*/
-  /*font-size: 25vmin;*/
-  /*background-color: #3498db;*/
-  /*border-radius: 0.5em;*/
-  /*box-shadow:*/
-    /*0 0 0 0em rgba(#3498db, 0),*/
-    /*0em 0.05em 0.1em rgba(#000000, 0.2);*/
-  /*transform: translate3d(0, 0, 0) scale(1);*/
-}
-
-.Phone::before,
-.Phone::after {
-  position: absolute;
-  content: "";
-}
-
-.Phone::before {
-  top: 0;
-  left: 0;
-  width: 1em;
-  height: 1em;
-  background-color: rgba(#fff, 0.1);
-  border-radius: 100%;
-  opacity: 1;
-  transform: translate3d(0, 0, 0) scale(0);
-}
-
-
-
-
-
 
 /* PONETE ACA EL CSS TUYO MIKI */
 
@@ -368,10 +332,25 @@ svg{
   fill:#390;
 }
 
+.text_area{
+  opacity: 0;
+  animation:appear 0.3s ease-in 8.7s forwards;
+}
+
+.microphone{
+  opacity: 0;
+  animation:appear 0.3s ease-in 8.7s forwards;
+}
+
+.check_mark{
+  opacity: 0;
+  visibility: hidden;
+}
 
 .tick-group{
   opacity:0;
-  animation:appear 0.3s ease-in 6s forwards;
+  animation:appear 0.3s ease-in 6s forwards,
+  disappear 0.3s ease-out 8s forwards;
 }
 
 @keyframes appear{
@@ -392,10 +371,68 @@ svg{
   }
 }
 
+@keyframes disappear{
+  0%{
+    opacity:1;
+    transform-origin: center center;
+    transform: scale(1);
+  }
+  90%{
+    opacity:0.1;
+    transform-origin: center center;
+    transform: scale(0.4);
+  }
+  100%{
+    opacity:0;
+    transform-origin: center center;
+    transform: scale(0.3);
+  }
+}
+
+.pulse {
+  animation: phone-outer 3000ms infinite;
+}
+
+.phone_circle{
+  box-shadow: 0 0 0 0em rgba(52, 152, 219, 0), 0em 0.05em 0.1em rgba(0, 0, 0, 0.2);
+}
+
+@keyframes phone-outer {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    box-shadow:
+      0 0 0 0em rgba(#3498db, 0),
+      0em 0.05em 0.1em rgba(#000000, 0.2);
+  }
+  33.3333% {
+    transform: translate3d(-3px, -5px, 0) scale(1.1);
+    box-shadow:
+      0 0 0 0em rgba(#3498db, 0.1),
+      0em 0.05em 0.1em rgba(#000000, 0.5);
+  }
+  66.6666% {
+    transform: translate3d(0, 0, 0) scale(1);
+    box-shadow:
+      0 0 0 0.5em rgba(#3498db, 0),
+      0em 0.05em 0.1em rgba(#000000, 0.2);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale (1);
+    box-shadow:
+      0 0 0 0em rgba(#3498db, 0),
+      0em 0.05em 0.1em rgba(#000000, 0.2);
+  }
+}
+
 .sms-group{
   opacity:0;
   animation: blop 5s ease-in-out 1s forwards;
   transform-origin: center center;
+}
+
+.tick_group{
+  opacity:0;
+  animation:appear 0.3s ease-in 6s forwards, disappear 0.8s ease-out 8s forwards;;
 }
 
 @keyframes blop{
@@ -418,6 +455,7 @@ svg{
    100%{
     opacity:0;
   }
+}
 
 
 
