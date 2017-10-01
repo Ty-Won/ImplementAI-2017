@@ -8,7 +8,6 @@ class Person(models.Model):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    profile_id = models.CharField(max_length=50)
     first_name = models.CharField(max_length=30)
     savings_amount = models.IntegerField(default=0)
     chequing_amount = models.IntegerField(default=0)

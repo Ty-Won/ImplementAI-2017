@@ -29,6 +29,23 @@ def parse_audio_file(request):
         return HttpResponse(status=200, content="Test")
 
 
+def process_text_service(parsed_text):
+
+    status = parsed_text.get("RecognitionStatus")
+
+    if status == "Success":
+
+        text = parsed_text.get("DisplayText")
+        words = text.split(' ')
+        print words
+        # lookup_list = ["transfer", "savings", "chequing"]
+        lookup_list = ["tour", "long"]
+        if all(word in words for word in lookup_list):
+            print "test"
+
+            # if words.index("savings") < words.index("chequing"):
+            #     pass
+
 def signup(request):
     return render(request, "sign-up.html", {})
 

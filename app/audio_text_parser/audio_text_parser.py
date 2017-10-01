@@ -1,4 +1,7 @@
+import traceback
 import uuid
+
+import os
 import requests
 import wave
 from argparse import ArgumentError, ArgumentTypeError, ArgumentParser
@@ -13,11 +16,13 @@ def main():
 
         args = arg_parser.parse_args()
 
-        w = wave.open(args.file_path, "rb")
+        w = wave.open(os.path.join(os.path.relpath(__file__),"..", "test_files", "man1_wb.wav"), "rb")
         binary_data = w.readframes(w.getnframes())
         w.close()
 
         AudioTextParser(binary_data).parse_audio()
+
+        exit(0)
 
     except (ArgumentError, ArgumentTypeError, IOError, OSError):
         exit(1)
@@ -32,7 +37,7 @@ class AudioTextParser:
     def parse_audio(self):
 
         access_token = self.get_access_token()
-        self.send_audio_request(access_token)
+        return self.send_audio_request(access_token)
 
     def get_access_token(self):
 
@@ -61,7 +66,8 @@ class AudioTextParser:
         response = requests.request("POST", AudioTextParser.API_LINK, headers=headers, params=querystring,
                                     data=self.audio_binary)
 
-        print response.text
+        print response.json()
+        return response.json()
 
 
 if __name__ == "__main__":
