@@ -2,15 +2,14 @@
 from __future__ import unicode_literals
 
 import os
-import wave
-import pydub
+
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-
 from PickupAI.settings import BASE_DIR
-from audio_text_parser.audio_text_parser import AudioTextParser
-
+from .models import Person
 
 def index(request):
     return render(request, "index.html", {})
@@ -24,18 +23,8 @@ def parse_audio_file(request):
         blob_data = request.FILES.get("data")
 
         tmp_file_path = os.path.join(BASE_DIR, "app", "tmp_files", "tmp_wav_file.wav")
-
-        w = wave.open(os.path.join(os.path.relpath(__file__), "..", "audio_text_parser", "test_files", "recording.wav"), "rb")
-        binary_data = w.readframes(w.getnframes())
-        w.close()
-
-        output = AudioTextParser(binary_data).parse_audio()
-        process_text_service(output)
-        dict_parsed_text = json.loads(output)
-
-        # audio_text_path = os.path.join(BASE_DIR, "app", "audio_text_parser", "audio_text_parser.py")
-        # output = os.subprocess.check_output(["python", audio_text_path, os.path.join(BASE_DIR, "app", "tmp_files", "output.wav")])
-        # print output
+        path = default_storage.save(tmp_file_path, ContentFile(blob_data.read()))
+        print(path)
 
         return HttpResponse(status=200, content="Test")
 
@@ -56,3 +45,7 @@ def process_text_service(parsed_text):
 
             # if words.index("savings") < words.index("chequing"):
             #     pass
+
+def signup(request):
+    return render(request, "sign-up.html", {})
+
