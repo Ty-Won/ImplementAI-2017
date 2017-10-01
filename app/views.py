@@ -9,9 +9,21 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from PickupAI.settings import BASE_DIR
-
+from .models import Person
 
 def index(request):
+    file = open("../identitydata.csv")
+    for user in file:
+        person = user.split(',')
+        databaseModel = Person.objects.create()
+        databaseModel.profile_id = person[0]
+        databaseModel.first_name = person[1]
+        databaseModel.savings_amount = person[2]
+        databaseModel.chequing_amount = person[3]
+        databaseModel.sex = person[4]
+        databaseModel.age = person[5]
+        databaseModel.save()
+    file.close()
     return render(request, "index.html", {})
 
 
@@ -27,3 +39,8 @@ def parse_audio_file(request):
         print(path)
 
         return HttpResponse(status=200, content="Test")
+
+
+def signup(request):
+    return render(request, "sign-up.html", {})
+
