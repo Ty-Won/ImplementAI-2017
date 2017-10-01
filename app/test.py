@@ -22,16 +22,17 @@ def process_text_service(parsed_text):
         words = text.split(' ')
         print words
         lookup_list = ["transfer", "savings", "chequing"]
-        # lookup_list = ["tour", "long"]
+
         if words.index("savings") < words.index("checking"):
 
             regexp_amt = re.compile(r'\$\d+')
             for word in words:
                 if re.match(regexp_amt, word):
                     amt = re.findall("\d+", word)
-                    print(amt[0])
-                    random_person = Person.objects.filter(id=2).first()
-                    print(random_person)
+                    random_person = Person.objects.filter(id=3).first()
+                    random_person.savings_amount -= 50
+                    random_person.chequing_amount -= 50
+                    random_person.save()
 
 
 if __name__ == "__main__":
