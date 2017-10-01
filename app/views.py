@@ -12,18 +12,6 @@ from PickupAI.settings import BASE_DIR
 from .models import Person
 
 def index(request):
-    file = open("../identitydata.csv")
-    for user in file:
-        person = user.split(',')
-        databaseModel = Person.objects.create()
-        databaseModel.profile_id = person[0]
-        databaseModel.first_name = person[1]
-        databaseModel.savings_amount = person[2]
-        databaseModel.chequing_amount = person[3]
-        databaseModel.sex = person[4]
-        databaseModel.age = person[5]
-        databaseModel.save()
-    file.close()
     return render(request, "index.html", {})
 
 
