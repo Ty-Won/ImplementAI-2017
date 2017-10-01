@@ -24,6 +24,6 @@ def parse_audio_file(request):
 
         tmp_file_path = os.path.join(BASE_DIR, "app", "tmp_files", "tmp_wav_file.wav")
         path = default_storage.save(tmp_file_path, ContentFile(blob_data.read()))
-        print path
+        print(path)
 
         return HttpResponse(status=200, content="Test")
