@@ -2,9 +2,9 @@
 // when more browsers support MediaRecorder
 
 navigator.getUserMedia = ( navigator.getUserMedia ||
-                       navigator.webkitGetUserMedia ||
-                       navigator.mozGetUserMedia ||
-                       navigator.msGetUserMedia);
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia);
 
 // set up basic variables for app
 
@@ -21,125 +21,144 @@ var canvasCtx = canvas.getContext("2d");
 //main block for doing the audio recording
 
 if (navigator.getUserMedia) {
-   console.log('getUserMedia supported.');
-   navigator.getUserMedia (
-      // constraints - only audio needed for this app
-      {
-         audio: true
-      },
+    console.log('getUserMedia supported.');
+    navigator.getUserMedia (
+        // constraints - only audio needed for this app
+        {
+            audio: true
+        },
 
-      // Success callback
-      function(stream) {
-      	 var mediaRecorder = new MediaRecorder(stream);
+        // Success callback
+        function(stream) {
+            var mediaRecorder = new MediaRecorder(stream);
+            var chunks = [];
+            visualize(stream);
 
-      	 visualize(stream);
+            record.onclick = function() {
+                mediaRecorder.start();
+                console.log(mediaRecorder.state);
+                console.log("recorder started");
+                record.style.background = "red";
+                record.style.color = "black";
+            }
 
-      	 record.onclick = function() {
-      	 	mediaRecorder.start();
-          console.log(mediaRecorder.state);
-      	 	console.log("recorder started");
-      	 	record.style.background = "red";
-      	 	record.style.color = "black";
-      	 }
+            stop.onclick = function() {
+                mediaRecorder.stop();
+                console.log(mediaRecorder.state);
+                console.log("recorder stopped");
+                record.style.background = "";
+                record.style.color = "";
+            }
 
-      	 stop.onclick = function() {
-      	 	mediaRecorder.stop();
-          console.log(mediaRecorder.state);
-      	 	console.log("recorder stopped");
-      	 	record.style.background = "";
-      	 	record.style.color = "";
-      	 }
+            mediaRecorder.ondataavailable = function(e) {
+                chunks.push(e.data);
+            }
 
-      	 mediaRecorder.ondataavailable = function(e) {
-           console.log("data available");
+            mediaRecorder.onstop = function(e) {
+                console.log("recorder stopped");
 
-           var clipName = prompt('Enter a name for your sound clip');
+                var clipName = prompt('Enter a name for your sound clip');
 
-      	   var clipContainer = document.createElement('article');
-      	   var clipLabel = document.createElement('p');
-           var audio = document.createElement('audio');
-           var deleteButton = document.createElement('button');
-           
-           clipContainer.classList.add('clip');
-           audio.setAttribute('controls', '');
-           deleteButton.innerHTML = "Delete";
-           clipLabel.innerHTML = clipName;
+                var clipContainer = document.createElement('article');
+                var clipLabel = document.createElement('p');
+                var audio = document.createElement('audio');
+                var deleteButton = document.createElement('button');
 
-           clipContainer.appendChild(audio);
-           clipContainer.appendChild(clipLabel);
-           clipContainer.appendChild(deleteButton);
-           soundClips.appendChild(clipContainer);
+                clipContainer.classList.add('clip');
+                audio.setAttribute('controls', '');
+                deleteButton.innerHTML = "Delete";
+                clipLabel.innerHTML = clipName;
 
-           var audioURL = window.URL.createObjectURL(e.data);
-           audio.src = audioURL;
+                clipContainer.appendChild(audio);
+                clipContainer.appendChild(clipLabel);
+                clipContainer.appendChild(deleteButton);
+                soundClips.appendChild(clipContainer);
 
-           deleteButton.onclick = function(e) {
-             evtTgt = e.target;
-             evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
-           }
-      	 }
-      },
+                var blob = new Blob(chunks, { 'type' : 'audio/wav; codecs=opus' });
 
-      // Error callback
-      function(err) {
-         console.log('The following gUM error occured: ' + err);
-      }
-   );
+                var fd = new FormData();
+                fd.append('data', blob);
+                $.ajax({
+                    type: 'POST',
+                    url: 'app/parse_audio_file',
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    success: function(returned_data){
+                        console.log(returned_data);
+                    }
+                });
+
+                var audioURL = window.URL.createObjectURL(blob);
+                audio.src = audioURL;
+
+                deleteButton.onclick = function(e) {
+                    var evtTgt = e.target;
+                    evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+                }
+            }
+        },
+
+        // Error callback
+        function(err) {
+            console.log('The following gUM error occured: ' + err);
+        }
+    );
 } else {
-   console.log('getUserMedia not supported on your browser!');
+    console.log('getUserMedia not supported on your browser!');
 }
 
 function visualize(stream) {
-  var source = audioCtx.createMediaStreamSource(stream);
+    var source = audioCtx.createMediaStreamSource(stream);
 
-  var analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 2048;
-  var bufferLength = analyser.frequencyBinCount;
-  var dataArray = new Uint8Array(bufferLength);
+    var analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    var bufferLength = analyser.frequencyBinCount;
+    var dataArray = new Uint8Array(bufferLength);
 
-  source.connect(analyser);
-  //analyser.connect(audioCtx.destination);
-  
-  WIDTH = canvas.width
-  HEIGHT = canvas.height;
+    source.connect(analyser);
+    //analyser.connect(audioCtx.destination);
 
-  draw()
+    WIDTH = canvas.width
+    HEIGHT = canvas.height;
 
-  function draw() {
+    draw()
 
-    requestAnimationFrame(draw);
+    function draw() {
 
-    analyser.getByteTimeDomainData(dataArray);
+        requestAnimationFrame(draw);
 
-    canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+        analyser.getByteTimeDomainData(dataArray);
 
-    canvasCtx.lineWidth = 2;
-    canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+        canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+        canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    canvasCtx.beginPath();
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
 
-    var sliceWidth = WIDTH * 1.0 / bufferLength;
-    var x = 0;
+        canvasCtx.beginPath();
+
+        var sliceWidth = WIDTH * 1.0 / bufferLength;
+        var x = 0;
 
 
-    for(var i = 0; i < bufferLength; i++) {
- 
-      var v = dataArray[i] / 128.0;
-      var y = v * HEIGHT/2;
+        for(var i = 0; i < bufferLength; i++) {
 
-      if(i === 0) {
-        canvasCtx.moveTo(x, y);
-      } else {
-        canvasCtx.lineTo(x, y);
-      }
+            var v = dataArray[i] / 128.0;
+            var y = v * HEIGHT/2;
 
-      x += sliceWidth;
+            if(i === 0) {
+                canvasCtx.moveTo(x, y);
+            } else {
+                canvasCtx.lineTo(x, y);
+            }
+
+            x += sliceWidth;
+        }
+
+        canvasCtx.lineTo(canvas.width, canvas.height/2);
+        canvasCtx.stroke();
+
     }
-
-    canvasCtx.lineTo(canvas.width, canvas.height/2);
-    canvasCtx.stroke();
-
-  }
 }
 
